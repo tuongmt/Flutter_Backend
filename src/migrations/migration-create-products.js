@@ -27,9 +27,9 @@ module.exports = {
             idCate: {
                 type: Sequelize.INTEGER
             },
-            idBrand: {
-                type: Sequelize.INTEGER
-            },
+            // idBrand: {
+            //     type: Sequelize.INTEGER
+            // },
             idDiscount: {
                 type: Sequelize.INTEGER
             },

@@ -8,11 +8,11 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "idCateData",
       });
-      Products.belongsTo(models.Brands, {
-        foreignKey: "idBrand",
-        targetKey: "id",
-        as: "idBrandData",
-      });
+      // Products.belongsTo(models.Brands, {
+      //   foreignKey: "idBrand",
+      //   targetKey: "id",
+      //   as: "idBrandData",
+      // });
       Products.belongsTo(models.Discount, {
         foreignKey: "idDiscount",
         targetKey: "id",
@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       quantity: DataTypes.STRING,
       image: DataTypes.TEXT,
       idCate: DataTypes.INTEGER,
-      idBrand: DataTypes.INTEGER,
+      // idBrand: DataTypes.INTEGER,
       idDiscount: DataTypes.INTEGER,
       idSale: DataTypes.INTEGER,
     },

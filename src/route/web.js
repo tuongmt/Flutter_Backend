@@ -101,10 +101,7 @@ const initWebRouters = (app) => {
 
   router.get("/api/loc-don-hang", orderController.handleLocdonhang);
 
-  //api cua chuyen khoa
-  router.post("/api/create-new-specialty", specialtyController.createSpecialty);
-  router.get("/api/get-all-specialty", specialtyController.getAllSpecialty);
-
+  
   // thêm  trang mới  khi /tanh
   router.get("/tanh", (req, res) => {
     return res.send("Hello world with NTanh");

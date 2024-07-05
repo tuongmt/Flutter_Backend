@@ -170,50 +170,6 @@ let updateOrderData = (data) => {
 };
 
 
-let updateOrderData = (data) => {
-    return new Promise(async(resolve, reject) => {
-        try {
-
-            if (!data.id) {
-                resolve({
-                    errcode: 2,
-                    errMessage: "Missing required parameter"
-                })
-            }
-            let Order = await db.Orders.findOne({
-                where: { id: data.id },
-                raw: false
-            })
-            if (Order) {
-                if (data.order_status) {
-                    Order.order_status=data.order_status;
-                }
-                await Order.save();
-                resolve({
-                    errcode: 0,
-                    errMessage: "update Order succeeds !"
-                });
-            } else {
-                resolve({
-                    errcode: 1,
-                    errMessage: "Order not found !"
-                });
-            }
-        } catch (e) {
-            reject(e)
-
-        }
-    })
-}
-
-
-
-
-
-
-
-
-
 module.exports = {
   getAllOders: getAllOders,
   CreateOrders: CreateOrders,

@@ -9,7 +9,7 @@ const categoryService = ServiceFactory.createService("category");
 
 const handleGetAllProducts = async (req, res) => {
   try {
-    const { id, idCate, idBrand, price, orderBy } = req.query;
+    const { id, idCate, price, orderBy } = req.query;
 
     if (!id) {
       return res.status(200).json({
@@ -22,7 +22,6 @@ const handleGetAllProducts = async (req, res) => {
     const products = await productService.getAllProducts(
       id,
       idCate,
-      idBrand,
       price,
       orderBy
     );

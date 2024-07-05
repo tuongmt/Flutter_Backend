@@ -38,7 +38,7 @@ const checkCategoryName = (name) => {
 class ProductService {
   constructor() {}
 
-  getAllProducts = (productId, cateId, idbrand, priceRange, orderBy) => {
+  getAllProducts = (productId, cateId, priceRange, orderBy) => {
     return new Promise(async (resolve, reject) => {
       try {
         let queryConditions = {};
@@ -49,9 +49,6 @@ class ProductService {
 
         if (cateId) {
           queryConditions.idCate = cateId;
-        }
-        if (idbrand) {
-          queryConditions.idBrand = idbrand;
         }
 
         if (priceRange && priceRange !== "") {
@@ -78,12 +75,7 @@ class ProductService {
               model: db.Categories,
               as: "idCateData",
               attributes: ["name"],
-            },
-            {
-              model: db.Brands,
-              as: "idBrandData",
-              attributes: ["name"],
-            },
+            }
           ],
           raw: true,
           nest: true,
@@ -107,11 +99,6 @@ class ProductService {
               {
                 model: db.Categories,
                 as: "idCateData",
-                attributes: ["name"],
-              },
-              {
-                model: db.Brands,
-                as: "idBrandData",
                 attributes: ["name"],
               },
             ],
@@ -145,7 +132,6 @@ class ProductService {
             quantity: data.quantity,
             image: data.avatar,
             idCate: data.idCate,
-            idBrand: data.idBrand,
           });
           if (data && data.image) {
             data.image = Buffer.from(data.image, "base64").toString("binary");
