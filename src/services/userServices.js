@@ -154,6 +154,7 @@ let createUser = (data) => {
           roleId: data.roleId,
           image: data.avatar,
         });
+        user.password = null;
         // if (data && data.image) {
         //   data.image = Buffer.from(data.image, "base64").toString("binary");
         // }
@@ -162,7 +163,7 @@ let createUser = (data) => {
         }
         resolve({
           errCode: 0,
-          data: data,
+          data: user,
           message: "OK",
         });
       }
@@ -204,6 +205,10 @@ let updateUser = (data) => {
       }
       let user = await db.User.findOne({
         where: { id: data.id },
+        attributes: {
+          // Hide password
+          exclude: ["password"],
+        },
         raw: false,
       });
       if (user) {
@@ -235,12 +240,13 @@ let updateUser = (data) => {
         await user.save(); //Nếu bị lỗi TypeError: user.save is not a function thì vào config.json đổi raw: true --> false là đc
         resolve({
           errCode: 0,
-          errMessage: "Update User succeeds !",
+          errMessage: "Cap nhat nguoi dung thanh cong",
+          data : user
         });
       } else {
         resolve({
           errCode: 1,
-          errMessage: "User's not found !",
+          errMessage: "Khong tim thay nguoi dung",
         });
       }
     } catch (e) {
