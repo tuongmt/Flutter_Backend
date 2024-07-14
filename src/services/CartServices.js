@@ -1,4 +1,8 @@
 import db from "../models/index";
+const { randomUUID } = require("crypto");
+const { writeFile } = require("fs/promises");
+const path = require("path");
+const dirpath = "./content/images/";
 
 let checkCart = (data) => {
   return new Promise(async (resolve, reject) => {
@@ -28,6 +32,23 @@ let CreateCart = (data) => {
           errMessage: " Sản phẩm này đã tồn tại trong giỏ hàng",
         });
       } else {
+        if (data && data.image) {
+          const contents = data.image.replace(
+            /^data:([A-Za-z-+/]+);base64,/,
+            ""
+          );
+          const ext = data.image.substring(
+            data.image.indexOf("/") + 1,
+            data.image.indexOf(";base64")
+          );
+          const uuidv4 = randomUUID();
+          const filename = `${uuidv4}.${ext}`;
+          await writeFile(
+            path.join(dirpath, filename),
+            Buffer.from(contents, "base64")
+          );
+          data.image = filename;
+        }
         await db.Cart.create({
           name: data.name,
           price: data.price,
@@ -36,9 +57,9 @@ let CreateCart = (data) => {
           iduser: data.iduser,
           idproduct: data.idproduct,
         });
-        if (data && data.image) {
-          data.image = Buffer.from(data.image, "base64");
-        }
+        // if (data && data.image) {
+        //   data.image = Buffer.from(data.image, "base64");
+        // }
         if (!data) {
           data = {};
         }
