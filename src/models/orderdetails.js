@@ -13,7 +13,10 @@ module.exports = (sequelize, DataTypes) => {
             // define association here
             OrderDetails.belongsTo(models.Products, { foreignKey: 'product_id', targetKey: 'id', as: 'idProductData'})
             OrderDetails.belongsTo(models.Orders, { foreignKey: 'order_id', targetKey: 'id', as: 'idOrderData'})
-            
+            OrderDetails.hasMany(models.OrderDetailsToppings, {
+                foreignKey: "OrderDetailID",
+                as: "Toppings",
+            });
         }
     };
     OrderDetails.init({

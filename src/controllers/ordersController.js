@@ -18,7 +18,7 @@ let handleGetAllOrders = async (req, res) => {
   return res.status(200).json({
     errCode: 0,
     errMessage: "OK",
-    orders,
+    data:orders,
   });
 };
 
@@ -43,6 +43,12 @@ let handleLocdonhang = async (req, res) => {
   });
 };
 
+let handleUpdateOrderStatus = async(req, res) => {
+  let data = req.body;
+  let message = await OrderServices.updateOrderStatus(data);
+  return res.status(200).json(message)
+
+}
 
 let handleCreateOrders = async(req, res) => {
     let message = await OrderServices.CreateOrders(req.body);
@@ -166,5 +172,6 @@ module.exports = {
     handleEditOder:handleEditOder,
     handleLocdonhang:handleLocdonhang,
     handleVnPayReturn:handleVnPayReturn,
-    handleCreatePayment:handleCreatePayment
+    handleCreatePayment:handleCreatePayment,
+    handleUpdateOrderStatus: handleUpdateOrderStatus
 }

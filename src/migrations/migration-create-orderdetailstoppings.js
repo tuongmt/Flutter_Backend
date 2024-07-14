@@ -4,30 +4,21 @@ const { sequelize } = require("../models");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("cart", {
+    await queryInterface.createTable("OrderDetailsToppings", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      OrderDetailID: {
+        type: Sequelize.INTEGER,
+      },
 
-      name: {
-        type: Sequelize.STRING,
-      },
-      price: {
-        type: Sequelize.DECIMAL,
-      },
-      quantity: {
+      ToppingID: {
         type: Sequelize.INTEGER,
       },
-      image: {
-        type: Sequelize.TEXT,
-      },
-      iduser: {
-        type: Sequelize.INTEGER,
-      },
-      idproduct: {
+      order_id: {
         type: Sequelize.INTEGER,
       },
       createdAt: {
@@ -41,6 +32,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("cart");
+    await queryInterface.dropTable("OrderDetailsToppings");
   },
 };
