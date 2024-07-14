@@ -79,7 +79,7 @@ class ProductService {
               model: db.Categories,
               as: "idCateData",
               attributes: ["name"],
-            }
+            },
           ],
           raw: true,
           nest: true,
@@ -159,7 +159,7 @@ class ProductService {
           // }
           resolve({
             errCode: 0,
-            data: data,
+            data: prod._previousDataValues,
             message: "Product created successfully",
           });
         }
@@ -221,7 +221,7 @@ class ProductService {
           }
           product.set(data);
           await product.save();
-          resolve({ errCode: 0, message: "Product updated successfully" });
+          resolve({ errCode: 0, message: "Product updated successfully", data: product });
         }
       } catch (e) {
         reject(e);
@@ -273,7 +273,7 @@ class CategoryService {
           // }
           resolve({
             errCode: 0,
-            data: data,
+            data: cat._previousDataValues,
             message: "OK",
           });
         }
@@ -348,6 +348,7 @@ class CategoryService {
         resolve({
           errCode: 0,
           errMessage: "update categories succeeds !",
+          data: category,
         });
       } catch (e) {
         reject(e);
@@ -364,11 +365,11 @@ class CategoryService {
           categories = await db.Categories.findOne({
             where: { id: categoryId },
           });
+        } else {
+          categories = db.Categories.findAll({
+            order: [["createdAt", "ASC"]],
+          });
         }
-
-        categories = db.Categories.findAll({
-          order: [["createdAt", "ASC"]],
-        });
 
         resolve(categories);
       } catch (e) {
