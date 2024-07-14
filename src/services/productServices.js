@@ -1,5 +1,9 @@
 import db from "../models/index";
 import { Op } from "sequelize";
+const { randomUUID } = require("crypto");
+const { writeFile } = require("fs/promises");
+const path = require("path");
+const dirpath = "./content/images/";
 
 // Asynchronous Programming (Promise Pattern)
 // Separation of Concerns (SoC)
@@ -126,16 +130,33 @@ class ProductService {
           if (!data) {
             data = {};
           }
-          await db.Products.create({
+          if (data.image != null) {
+            const contents = data.image.replace(
+              /^data:([A-Za-z-+/]+);base64,/,
+              ""
+            );
+            const ext = data.image.substring(
+              data.image.indexOf("/") + 1,
+              data.image.indexOf(";base64")
+            );
+            const uuidv4 = randomUUID();
+            const filename = `${uuidv4}.${ext}`;
+            await writeFile(
+              path.join(dirpath, filename),
+              Buffer.from(contents, "base64")
+            );
+            data.image = filename;
+          }
+          let prod = await db.Products.create({
             name: data.name,
             price: data.price,
             quantity: data.quantity,
-            image: data.avatar,
+            image: data.image,
             idCate: data.idCate,
           });
-          if (data && data.image) {
-            data.image = Buffer.from(data.image, "base64").toString("binary");
-          }
+          // if (data && data.image) {
+          //   data.image = Buffer.from(data.image, "base64").toString("binary");
+          // }
           resolve({
             errCode: 0,
             data: data,
@@ -181,6 +202,23 @@ class ProductService {
             errMessage: "Product not found",
           });
         } else {
+          if (data.image != null) {
+            const contents = data.image.replace(
+              /^data:([A-Za-z-+/]+);base64,/,
+              ""
+            );
+            const ext = data.image.substring(
+              data.image.indexOf("/") + 1,
+              data.image.indexOf(";base64")
+            );
+            const uuidv4 = randomUUID();
+            const filename = `${uuidv4}.${ext}`;
+            await writeFile(
+              path.join(dirpath, filename),
+              Buffer.from(contents, "base64")
+            );
+            data.image = filename;
+          }
           product.set(data);
           await product.save();
           resolve({ errCode: 0, message: "Product updated successfully" });
@@ -209,14 +247,30 @@ class CategoryService {
           if (!data) {
             data = {};
           }
-
-          await db.Categories.create({
+          if (data.avatar != null) {
+            const contents = data.avatar.replace(
+              /^data:([A-Za-z-+/]+);base64,/,
+              ""
+            );
+            const ext = data.avatar.substring(
+              data.avatar.indexOf("/") + 1,
+              data.avatar.indexOf(";base64")
+            );
+            const uuidv4 = randomUUID();
+            const filename = `${uuidv4}.${ext}`;
+            await writeFile(
+              path.join(dirpath, filename),
+              Buffer.from(contents, "base64")
+            );
+            data.avatar = filename;
+          }
+          let cat = await db.Categories.create({
             name: data.name,
             image: data.avatar,
           });
-          if (data && data.image) {
-            data.image = Buffer.from(data.image, "base64").toString("binary");
-          }
+          // if (data && data.image) {
+          //   data.image = Buffer.from(data.image, "base64").toString("binary");
+          // }
           resolve({
             errCode: 0,
             data: data,
@@ -269,7 +323,23 @@ class CategoryService {
             errMessage: "categories not found !",
           });
         }
-
+        if (data.avatar != null) {
+          const contents = data.avatar.replace(
+            /^data:([A-Za-z-+/]+);base64,/,
+            ""
+          );
+          const ext = data.avatar.substring(
+            data.avatar.indexOf("/") + 1,
+            data.avatar.indexOf(";base64")
+          );
+          const uuidv4 = randomUUID();
+          const filename = `${uuidv4}.${ext}`;
+          await writeFile(
+            path.join(dirpath, filename),
+            Buffer.from(contents, "base64")
+          );
+          data.avatar = filename;
+        }
         category.name = data.name;
         if (data.avatar) {
           category.image = data.avatar;
