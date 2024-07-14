@@ -1,5 +1,9 @@
 import bcryptjs from "bcryptjs";
 import db from "../models/index";
+const { randomUUID } = require("crypto");
+const { writeFile } = require("fs/promises");
+const path = require("path");
+const dirpath = "./content/images/";
 
 const salt = bcryptjs.genSaltSync(10);
 
@@ -122,7 +126,25 @@ let createUser = (data) => {
         });
       } else {
         let hashPasswordFromBcrypt = await hashPassword(data.password);
-        await db.User.create({
+        
+        if (data && data.image) {
+          const contents = data.image.replace(
+            /^data:([A-Za-z-+/]+);base64,/,
+            ""
+          );
+          const ext = data.image.substring(
+            data.image.indexOf("/") + 1,
+            data.image.indexOf(";base64")
+          );
+          const uuidv4 = randomUUID();
+          const filename = `${uuidv4}.${ext}`;
+          await writeFile(
+            path.join(dirpath, filename),
+            Buffer.from(contents, "base64")
+          );
+          data.image = filename;
+        }
+        let user = await db.User.create({
           username: data.username,
           password: hashPasswordFromBcrypt,
           fullName: data.fullName,
@@ -132,9 +154,9 @@ let createUser = (data) => {
           roleId: data.roleId,
           image: data.avatar,
         });
-        if (data && data.image) {
-          data.image = Buffer.from(data.image, "base64").toString("binary");
-        }
+        // if (data && data.image) {
+        //   data.image = Buffer.from(data.image, "base64").toString("binary");
+        // }
         if (!data) {
           data = {};
         }
@@ -190,8 +212,25 @@ let updateUser = (data) => {
         user.phoneNumber = data.phoneNumber;
         user.email = data.email;
         user.roleId = data.roleId;
-        if (data.avatar) {
-          user.image = data.avatar;
+        if (data.image) {
+          if (data && data.image) {
+            const contents = data.image.replace(
+              /^data:([A-Za-z-+/]+);base64,/,
+              ""
+            );
+            const ext = data.image.substring(
+              data.image.indexOf("/") + 1,
+              data.image.indexOf(";base64")
+            );
+            const uuidv4 = randomUUID();
+            const filename = `${uuidv4}.${ext}`;
+            await writeFile(
+              path.join(dirpath, filename),
+              Buffer.from(contents, "base64")
+            );
+            data.image = filename;
+          }
+          user.image = data.image;
         }
         await user.save(); //Nếu bị lỗi TypeError: user.save is not a function thì vào config.json đổi raw: true --> false là đc
         resolve({
