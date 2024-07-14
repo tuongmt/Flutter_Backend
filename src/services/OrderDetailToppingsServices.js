@@ -1,14 +1,12 @@
 import db from "../models/index";
 
-let CreateOrderDetails = (data) => {
+let createOrderDetailToppings = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      await db.OrderDetails.create({
+      await db.OrderDetailsToppings.create({
+        OrderDetailID: data.order_detail_id,
+        ToppingID: data.topping_id,
         order_id: data.order_id,
-        product_id: data.product_id,
-        quantity: data.quantity,
-        total_price: data,
-        total_price,
       });
 
       if (!data) {
@@ -29,23 +27,23 @@ let CreateOrderDetails = (data) => {
   });
 };
 
-let deleteOrderDetails = (OrderDetailsId) => {
+let deleteOrderDetailsToppings = (OrderDetailsToppingId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let orderDetailsList = await db.OrderDetails.findAll({
-        where: { order_id: OrderDetailsId },
+      let orderDetailsList = await db.OrderDetailsToppings.findAll({
+        where: { id: OrderDetailsToppingId },
       });
 
       if (orderDetailsList.length === 0) {
         resolve({
           errCode: 2,
-          errMessage: "No order details found with the given order_id",
+          errMessage: "Khong tim thay don hang",
         });
       }
 
       // Delete all OrderDetails with the given order_id
-      await db.OrderDetails.destroy({
-        where: { order_id: OrderDetailsId },
+      await db.OrderDetailsToppings.destroy({
+        where: { id: OrderDetailsToppingId },
       });
 
       resolve({
@@ -61,7 +59,7 @@ let deleteOrderDetails = (OrderDetailsId) => {
   });
 };
 
-let updateOrderDetailsData = (data) => {
+let updateOrderDetailsToppingsData = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       if (!data.id) {
@@ -70,7 +68,7 @@ let updateOrderDetailsData = (data) => {
           errMessage: "Missing required parameter",
         });
       }
-      let OrderDetails = await db.OrderDetails.findOne({
+      let OrderDetails = await db.OrderDetailsToppings.findOne({
         where: { id: data.id },
         raw: false,
       });
@@ -93,13 +91,13 @@ let updateOrderDetailsData = (data) => {
   });
 };
 
-let getAllOrderDetails = (OrderDetailsId) => {
+let getAllOrderDetailsToppings = (OrderId) => {
   return new Promise(async (resolve, reject) => {
     try {
       let OrderDetails = "";
 
-      OrderDetails = await db.OrderDetails.findAll({
-        where: { order_id: OrderDetailsId },
+      OrderDetails = db.OrderDetailsToppings.findAll({
+        where: { order_id: OrderId },
         include: [
           {
             model: db.Products,
@@ -107,17 +105,12 @@ let getAllOrderDetails = (OrderDetailsId) => {
             attributes: ["name", "image", "price"],
           },
           {
-            model: db.OrderDetailsToppings,
-            as: "Toppings",
-            attributes: ["ToppingID", "order_id"],
-          },
-          {
             model: db.Orders,
             as: "idOrderData",
             attributes: ["order_status"],
           },
         ],
-        raw: false,
+        raw: true,
         nest: true,
       });
 
@@ -146,9 +139,9 @@ let layhoadon = (orderId1) => {
 };
 
 module.exports = {
-  getAllOrderDetails: getAllOrderDetails,
-  CreateOrderDetails: CreateOrderDetails,
-  deleteOrderDetails: deleteOrderDetails,
-  updateOrderDetailsData: updateOrderDetailsData,
+  getAllOrderDetailsToppings: getAllOrderDetailsToppings,
+  createOrderDetailToppings: createOrderDetailToppings,
+  deleteOrderDetailsToppings: deleteOrderDetailsToppings,
+  updateOrderDetailsToppingsData: updateOrderDetailsToppingsData,
   layhoadon: layhoadon,
 };

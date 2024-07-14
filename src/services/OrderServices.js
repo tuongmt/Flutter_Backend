@@ -1,3 +1,4 @@
+import { all } from "sequelize/lib/operators";
 import db from "../models/index";
 const { Sequelize, Op } = require("sequelize");
 
@@ -83,7 +84,7 @@ let CreateOrders = (data) => {
       }
 
       // Tạo đơn hàng mới
-      await db.Orders.create({
+      let order = await db.Orders.create({
         id_order: nextOrderId,
         receiver: data.receiver,
         order_status: data.order_status,
@@ -97,15 +98,71 @@ let CreateOrders = (data) => {
 
       const productListWithOrderId = data.productList.map((item) => ({
         ...item,
-        order_id: nextOrderId,
+        order_id: order.id,
       }));
       await db.OrderDetails.bulkCreate(productListWithOrderId);
+      // Assuming db.OrderDetails.findAll() is the correct method to get multiple order details
+      const orderDetails = await db.OrderDetails.findAll({
+        where: { order_id: order.id },
+      });
+
+      // Ensure orderDetails is an array before proceeding
+      if (!Array.isArray(orderDetails)) {
+        throw new Error("orderDetails is not an array");
+      }
+      if (data && data.toppings) {
+        const orderDetailToppingsWithCorrectOrderDetailId = data.toppings.map(
+          (topping) => {
+            // Find the corresponding OrderDetail based on product_id
+            const matchingOrderDetail = orderDetails.find(
+              (orderDetail) => orderDetail.product_id === topping.product_id
+            );
+
+            return {
+              ToppingID: topping.ToppingID,
+              OrderDetailID: matchingOrderDetail
+                ? matchingOrderDetail.id
+                : null, // Use the ID of the found OrderDetail or null
+              order_id: order.id,
+            };
+          }
+        );
+
+        await db.OrderDetailsToppings.bulkCreate(
+          orderDetailToppingsWithCorrectOrderDetailId
+        );
+      }
+      // Assuming orderDetails is an array and has the same length as data.toppings
+
+      let OrderDetails = await db.OrderDetails.findAll({
+        where: { order_id: order.id },
+        include: [
+          {
+            model: db.Products,
+            as: "idProductData",
+            attributes: ["name", "image", "price"],
+          },
+          {
+            model: db.OrderDetailsToppings,
+            as: "Toppings",
+            attributes: ["ToppingID", "order_id"],
+          },
+          {
+            model: db.Orders,
+            as: "idOrderData",
+            attributes: ["order_status"],
+          },
+        ],
+        raw: false,
+        nest: true,
+      });
 
       resolve({
         errCode: 0,
         message: "OK",
         data: {
-          ...data,
+          //...order.dataValues,
+          ...OrderDetails,
           id_order: nextOrderId,
         },
         productListWithOrderId: { order_id: nextOrderId },
@@ -151,11 +208,13 @@ let updateOrderData = (data) => {
         raw: false,
       });
       if (Order) {
-        Order.order_status = "Đã xác nhận";
+        //Order.order_status = "Đã xác nhận";
+        Order.set(data);
         await Order.save();
         resolve({
           errCode: 0,
           errMessage: "update Order succeeds !",
+          data: Order,
         });
       } else {
         resolve({
@@ -169,11 +228,45 @@ let updateOrderData = (data) => {
   });
 };
 
+let updateOrderStatus = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!data.id) {
+        resolve({
+          errCode: 2,
+          errMessage: "Missing required parameter",
+        });
+      }
+      let Order = await db.Orders.findOne({
+        where: { id: data.id },
+        raw: false,
+      });
+      if (Order) {
+        Order.order_status = data.order_status;
+        //Order.set(data);
+        await Order.save();
+        resolve({
+          errCode: 0,
+          errMessage: "update Order succeeds !",
+          data: Order,
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Order not found !",
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 
 module.exports = {
   getAllOders: getAllOders,
   CreateOrders: CreateOrders,
   deleteOrders: deleteOrders,
   updateOrderData: updateOrderData,
+  updateOrderStatus: updateOrderStatus,
   locdonhang: locdonhang,
 };

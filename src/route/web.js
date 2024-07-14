@@ -7,6 +7,8 @@ import brandController from "../controllers/brandController";
 import SaleController from "../controllers/saleController";
 import CartController from "../controllers/cartController";
 import OrderdetailController from "../controllers/orderdetailController";
+import OrderdetailtoppingController from "../controllers/orderdetailtoppingsController";
+import toppingController from "../controllers/toppingController";
 
 const router = express.Router();
 
@@ -63,6 +65,24 @@ const initWebRouters = (app) => {
   );
   router.get("/api/get-lay-hoa-don", OrderdetailController.handleLayhoadon);
 
+  //Orderdetail toppings route
+  router.post(
+    "/api/create-new-Orderdetailtopping",
+    OrderdetailtoppingController.handleCreateOrderdetailtoppings
+  );
+  router.delete(
+    "/api/delete-Orderdetailtopping",
+    OrderdetailtoppingController.handleDeleteOrderdetailtoppings
+  );
+  router.put(
+    "/api/edit-Orderdetailtopping",
+    OrderdetailtoppingController.handleEditOrderdetailtoppings
+  );
+  router.get(
+    "/api/get-all-Orderdetailtopping",
+    OrderdetailtoppingController.handlegetAllOrderdetailtoppings
+  );
+
   //Brand route
   router.post("/api/create-new-brand", brandController.handleCreateBrand);
   router.delete("/api/delete-brand", brandController.handleDeleteBrand);
@@ -90,28 +110,37 @@ const initWebRouters = (app) => {
     productController.handlegetAllCategories
   );
 
+  //Toppings route
+  router.post("/api/create-new-topping", toppingController.handleCreateTopping);
+  router.delete("/api/delete-topping", toppingController.handleDeleteTopping);
+  router.put("/api/edit-topping", toppingController.handleEditTopping);
+  router.get("/api/get-all-toppings", toppingController.handlegetAllToppings);
+
   //Order route
   router.get("/api/get-all-orders", orderController.handleGetAllOrders);
   router.post("/api/create-new-orders", orderController.handleCreateOrders);
   router.delete("/api/delete-orders", orderController.handleDeleteOrders);
   router.put("/api/edit-orders", orderController.handleEditOder);
+  router.put("/api/update-orders-status", orderController.handleUpdateOrderStatus);
 
-  router.get('/vnpay/vnpay_return', orderController.handleVnPayReturn);
-  router.post('/vnpay/create_order', orderController.handleCreatePayment);
+
+  router.get("/vnpay/vnpay_return", orderController.handleVnPayReturn);
+  router.post("/vnpay/create_order", orderController.handleCreatePayment);
 
   router.get("/api/loc-don-hang", orderController.handleLocdonhang);
 
-  
   // thêm  trang mới  khi /tanh
   router.get("/tanh", (req, res) => {
     return res.send("Hello world with NTanh");
   });
-  
-  router.get('/vnpay/create_order', function (req, res, next) {
-    return res.json({ "status": 502, "message": "Bạn chưa truyền tham số vào đơn hàng!" });
+
+  router.get("/vnpay/create_order", function (req, res, next) {
+    return res.json({
+      status: 502,
+      message: "Bạn chưa truyền tham số vào đơn hàng!",
+    });
   });
 
-  
   return app.use("/", router);
 };
 module.exports = initWebRouters;
