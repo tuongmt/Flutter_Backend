@@ -7,6 +7,18 @@ import cors from "cors";
 
 require('dotenv').config();
 
+const fs = require('fs');
+const path = require('path');
+ 
+fs.mkdir(path.join("./content/images"),
+  (err) => {
+    if (err) {
+        return console.error("Directory is already exist! " + "./content/images");
+    }
+    console.log('Directory created successfully!');
+  }
+);
+
 let app = express();
 
 // Sử dụng middleware cors
