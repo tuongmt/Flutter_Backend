@@ -104,7 +104,7 @@ let getAllOrderDetails = (OrderDetailsId) => {
           {
             model: db.Products,
             as: "idProductData",
-            attributes: ["name", "image", "price"],
+            attributes: ["id","name", "image", "price"],
           },
           {
             model: db.OrderDetailsToppings,
