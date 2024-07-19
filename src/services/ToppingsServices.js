@@ -55,7 +55,7 @@ let createTopping = (data) => {
           data.image = filename;
         }
         console.log(data);
-        await db.Toppings.create({
+        var topping = await db.Toppings.create({
           ToppingName: data.ToppingName,
           image: data.image,
           CategoryID: data.CategoryID,
@@ -67,7 +67,7 @@ let createTopping = (data) => {
         //   }
         resolve({
           errCode: 0,
-          data: data,
+          data: topping,
           message: "OK",
         });
       }
