@@ -140,7 +140,7 @@ let CreateOrders = (data) => {
           {
             model: db.Products,
             as: "idProductData",
-            attributes: ["name", "image", "price"],
+            attributes: ["id", "name", "image", "price"],
           },
           {
             model: db.OrderDetailsToppings,
@@ -161,8 +161,8 @@ let CreateOrders = (data) => {
         errCode: 0,
         message: "OK",
         data: {
-          //...order.dataValues,
-          ...OrderDetails,
+          ...order.dataValues,
+          //...OrderDetails,
           id_order: nextOrderId,
         },
         productListWithOrderId: { order_id: nextOrderId },

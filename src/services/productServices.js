@@ -247,14 +247,14 @@ class CategoryService {
           if (!data) {
             data = {};
           }
-          if (data.avatar != null) {
-            const contents = data.avatar.replace(
+          if (data.image != null) {
+            const contents = data.image.replace(
               /^data:([A-Za-z-+/]+);base64,/,
               ""
             );
-            const ext = data.avatar.substring(
-              data.avatar.indexOf("/") + 1,
-              data.avatar.indexOf(";base64")
+            const ext = data.image.substring(
+              data.image.indexOf("/") + 1,
+              data.image.indexOf(";base64")
             );
             const uuidv4 = randomUUID();
             const filename = `${uuidv4}.${ext}`;
@@ -262,11 +262,11 @@ class CategoryService {
               path.join(dirpath, filename),
               Buffer.from(contents, "base64")
             );
-            data.avatar = filename;
+            data.image = filename;
           }
           let cat = await db.Categories.create({
             name: data.name,
-            image: data.avatar,
+            image: data.image,
           });
           // if (data && data.image) {
           //   data.image = Buffer.from(data.image, "base64").toString("binary");
@@ -323,14 +323,14 @@ class CategoryService {
             errMessage: "categories not found !",
           });
         }
-        if (data.avatar != null) {
-          const contents = data.avatar.replace(
+        if (data.image != null) {
+          const contents = data.image.replace(
             /^data:([A-Za-z-+/]+);base64,/,
             ""
           );
-          const ext = data.avatar.substring(
-            data.avatar.indexOf("/") + 1,
-            data.avatar.indexOf(";base64")
+          const ext = data.image.substring(
+            data.image.indexOf("/") + 1,
+            data.image.indexOf(";base64")
           );
           const uuidv4 = randomUUID();
           const filename = `${uuidv4}.${ext}`;
@@ -338,11 +338,11 @@ class CategoryService {
             path.join(dirpath, filename),
             Buffer.from(contents, "base64")
           );
-          data.avatar = filename;
+          data.image = filename;
         }
         category.name = data.name;
-        if (data.avatar) {
-          category.image = data.avatar;
+        if (data.image) {
+          category.image = data.image;
         }
         await category.save();
         resolve({

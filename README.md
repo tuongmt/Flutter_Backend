@@ -4,4 +4,5 @@
 2. Copy `.env.example` thành `.env`.
 3. Chạy lệnh `npm install` để cài đặt các gói phụ thuộc.
 4. Chạy lệnh `npx sequelize db:migrate` để migrate database.
-5. Chạy lệnh `npm start` để khởi động ứng dụng.
+5. Tạo folder `.\content\images`
+6. Chạy lệnh `npm start` để khởi động ứng dụng.

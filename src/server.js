@@ -7,16 +7,29 @@ import cors from "cors";
 
 require('dotenv').config();
 
+const fs = require('fs');
+const path = require('path');
+ 
+fs.mkdir(path.join("./content/images"),
+  (err) => {
+    if (err) {
+        return console.error("Directory is already exist! " + "./content/images");
+    }
+    console.log('Directory created successfully!');
+  }
+);
+
 let app = express();
 
 // Sử dụng middleware cors
-app.use(cors({
-  origin: [process.env.URL_REACT, process.env.URL_REACT2], // Cho phép truy cập từ danh sách các domain được xác định trong biến môi trường
-  methods: "GET, POST, OPTIONS, PUT, PATCH, DELETE",
-  credentials: true,
-  allowedHeaders: "X-Requested-With,content-type",
-}));
+// app.use(cors({
+//   origin: [process.env.URL_REACT, process.env.URL_REACT2], // Cho phép truy cập từ danh sách các domain được xác định trong biến môi trường
+//   methods: "GET, POST, OPTIONS, PUT, PATCH, DELETE",
+//   credentials: true,
+//   allowedHeaders: "X-Requested-With,content-type",
+// }));
 
+app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use("/uploads/images", express.static("./content/images"));
