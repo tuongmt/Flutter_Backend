@@ -161,8 +161,8 @@ let CreateOrders = (data) => {
         errCode: 0,
         message: "OK",
         data: {
-          //...order.dataValues,
-          ...OrderDetails,
+          ...order.dataValues,
+          //...OrderDetails,
           id_order: nextOrderId,
         },
         productListWithOrderId: { order_id: nextOrderId },
