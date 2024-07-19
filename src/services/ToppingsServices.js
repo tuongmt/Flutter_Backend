@@ -27,7 +27,7 @@ const checkToppingName = (name) => {
 let createTopping = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let checkCName = await checkToppingName(data.name);
+      let checkCName = await checkToppingName(data.ToppingName);
       if (checkCName) {
         resolve({
           errCode: 1,
@@ -56,11 +56,11 @@ let createTopping = (data) => {
         }
         console.log(data);
         await db.Toppings.create({
-          ToppingName: data.name,
+          ToppingName: data.ToppingName,
           image: data.image,
-          CategoryID: data.cate_id,
+          CategoryID: data.CategoryID,
           createdAt: new Date(Date.now()).toLocaleDateString("vi-VN"),
-          Price: data.price,
+          Price: data.Price,
         });
         //   if (data && data.image) {
         //     data.image = Buffer.from(data.image, "base64").toString("binary");
@@ -134,14 +134,17 @@ let updateTopping = (data) => {
         );
         data.image = filename;
       }
-      if (data.price) {
-        category.Price = data.price;
+      if (data.Price) {
+        category.Price = data.Price;
       }
       if (data.image) {
         category.image = data.image;
       }
-      if (data.name) {
-        category.ToppingName = data.name;
+      if (data.ToppingName) {
+        category.ToppingName = data.ToppingName;
+      }
+      if (data.CategoryID) {
+        category.CategoryID = data.CategoryID;
       }
       await category.save();
       resolve({
