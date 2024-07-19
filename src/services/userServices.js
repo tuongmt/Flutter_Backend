@@ -152,7 +152,7 @@ let createUser = (data) => {
           phoneNumber: data.phoneNumber,
           email: data.email,
           roleId: data.roleId,
-          image: data.avatar,
+          image: data.image,
         });
         user.password = null;
         // if (data && data.image) {
