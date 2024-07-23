@@ -42,7 +42,7 @@ const checkCategoryName = (name) => {
 class ProductService {
   constructor() {}
 
-  getAllProducts = (productId, cateId, priceRange, orderBy) => {
+  getAllProducts = (productId, cateId, priceRange, orderBy, productName) => {
     return new Promise(async (resolve, reject) => {
       try {
         let queryConditions = {};
@@ -53,6 +53,13 @@ class ProductService {
 
         if (cateId) {
           queryConditions.idCate = cateId;
+        }
+
+        if (productName) {
+          let queryProductName = {
+            [Op.like]: '%' + productName + '%'
+          }
+          queryConditions.name = queryProductName;
         }
 
         if (priceRange && priceRange !== "") {
